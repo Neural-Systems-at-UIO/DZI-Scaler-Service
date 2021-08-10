@@ -16,5 +16,10 @@ public class HelloController {
     public String sayHello(){
         return ("Hello, SpringBoot on XXX");
     }
+	
+	@RequestMapping("fuck")
+    public String sayFuck(){
+        return ("Hello, FUCK SpringBoot");
+    }
 
 }
