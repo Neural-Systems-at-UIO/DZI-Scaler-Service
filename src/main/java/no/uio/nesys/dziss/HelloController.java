@@ -10,5 +10,10 @@ public class HelloController {
 	public String index() {
 		return "Greetings from Spring Boot!";
 	}
+	
+	@GetMapping("/xxx")
+	public String xxx() {
+		return "Greetings from XXX";
+	}
 
 }
