@@ -9,17 +9,12 @@ public class HelloController {
 
 	@GetMapping("/")
 	public String index() {
-		return "Greetings from Spring Boot!";
+		return "Greetings from Spring Boot on @GetMapping";
 	}
 	
 	@RequestMapping("hello")
     public String sayHello(){
-        return ("Hello, SpringBoot on XXX");
-    }
-	
-	@RequestMapping("fuck")
-    public String sayFuck(){
-        return ("Hello, FUCK SpringBoot");
+        return ("Hello, SpringBoot on @RequestMapping");
     }
 
 }
