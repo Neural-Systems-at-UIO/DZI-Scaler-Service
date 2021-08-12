@@ -14,6 +14,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,11 @@ public class ScalerController {
 	
 	private static final Logger logger = Logger.getLogger(
 			ScalerController.class.getName());
+	
+	@GetMapping("/")
+	public String index() {
+		return "DZI Scaler Service v.1";
+	}
 
 	@RequestMapping("/scaler")
 	public ResponseEntity<InputStreamResource> scaler(@RequestParam String dzi, @RequestParam int x,
