@@ -1,25 +1,5 @@
 <!DOCTYPE html>
 <html>
-<head>
-<style>
-table {
-	font-family: courier;
-	font-size: 12px;
-	border-collapse: collapse;
-	width: 100%;
-}
-
-td, th {
-	border: 1px solid #dddddd;
-	text-align: left;
-	padding: 3px;
-}
-
-tr:nth-child(even) {
-	background-color: #dddddd;
-}
-</style>
-</head>
 <script type="text/javascript">
 
     const BUCKET = getUrlParamValue("bucket");
@@ -34,31 +14,27 @@ tr:nth-child(even) {
 
     let path = BUCKET;
     if(!path.endsWith("/")) path = path + "/";
-
+    
     fetch(path + "?delimiter=/", {headers})
     .then(response => response.json())
     .then(value => {
-        
-        const THE_TABLE = document.getElementById("theTable");
         
         for(let dir of value) {
             dir = dir.subdir;
             if(dir) {
                 let name = dir.substring(0, dir.lastIndexOf("."));
                 let dzi = path + dir + name + ".dzi";
-        
-                var row = THE_TABLE.insertRow();
-                var cell1 = row.insertCell(0);
-                var cell2 = row.insertCell(1);
-                
-              	//SCALE rulz
+        		
+                //SCALE rulz
                 var url;
                 if (WIDTH) url = window.location.origin + "/width/?dzi=" + dzi + "&width=" + WIDTH + "&format=" + FORMAT;
                 if (SCALE) url = window.location.origin + "/scale/?dzi=" + dzi + "&scale=" + SCALE + "&format=" + FORMAT;
                 
-                var urlPreview = window.location.origin + "/width/?dzi=" + dzi + "&width=30&format=png";
-                cell1.innerHTML = "<img src=" + urlPreview + " />";
-                cell2.innerHTML = url.link(url);
+                var img = document.createElement('img');
+                img.src = url;
+                var container = document.getElementById("container");
+                container.appendChild(img);
+               
             }
         }
         //
@@ -72,9 +48,9 @@ tr:nth-child(even) {
 </script>
 <body>
 
-	<h2 id="theHeader">Download images</h2>
+	<h2>Images (experimental)</h2>
 
-	<table id="theTable" />
+	<div id="container"></div>
 
 </body>
 </html>

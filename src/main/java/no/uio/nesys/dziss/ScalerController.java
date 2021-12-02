@@ -60,11 +60,11 @@ public class ScalerController {
 	}
 
 	@RequestMapping("/scale")
-	public ResponseEntity<InputStreamResource> scaler(@RequestParam String dzi, @RequestParam double scale,
-			@RequestParam(defaultValue = "png") String format) {
+	public ResponseEntity<InputStreamResource> scaler(@RequestParam String dzi,
+			@RequestParam(defaultValue = "0.001") double scale, @RequestParam(defaultValue = "png") String format) {
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("content-disposition", "inline;filename=" + "scaled_" + scale + "." + format);
+		headers.add("content-disposition", "inline;filename=" + dzi + "_scaled_" + scale + "." + format);
 
 		try {
 
@@ -72,7 +72,51 @@ public class ScalerController {
 			BufferedImage scaled = reader.getWholeImage(scale);
 
 			return getResponseEntity(scaled, headers, format);
-			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body(null);
+
+		}
+
+	}
+
+	@RequestMapping("/width")
+	public ResponseEntity<InputStreamResource> scalerWidth(@RequestParam String dzi,
+			@RequestParam(defaultValue = "100") long width, @RequestParam(defaultValue = "png") String format) {
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("content-disposition", "inline;filename=" + dzi + "_width_" + width + "." + format);
+
+		try {
+
+			DeepZoomImageReaderUrl reader = new DeepZoomImageReaderUrl(new URL(dzi));
+			BufferedImage scaled = reader.getWholeImage(width / (double) reader.getWidth());
+
+			return getResponseEntity(scaled, headers, format);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body(null);
+
+		}
+
+	}
+
+	@RequestMapping("/height")
+	public ResponseEntity<InputStreamResource> scalerHeight(@RequestParam String dzi,
+			@RequestParam(defaultValue = "100") long height, @RequestParam(defaultValue = "png") String format) {
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("content-disposition", "inline;filename=" + dzi + "_height_" + height + "." + format);
+
+		try {
+
+			DeepZoomImageReaderUrl reader = new DeepZoomImageReaderUrl(new URL(dzi));
+			BufferedImage scaled = reader.getWholeImage(height / (double) reader.getHeight());
+
+			return getResponseEntity(scaled, headers, format);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.badRequest().body(null);
@@ -88,7 +132,7 @@ public class ScalerController {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("content-disposition",
-				"inline;filename=" + x + "_" + y + "_" + width + "_" + height + "_" + scale + "." + format);
+				"inline;filename=" + dzi + "_" + x + "_" + y + "_" + width + "_" + height + "_" + scale + "." + format);
 
 		try {
 			DeepZoomImageReaderUrl reader = new DeepZoomImageReaderUrl(new URL(dzi));
