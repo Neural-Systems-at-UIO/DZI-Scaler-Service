@@ -23,6 +23,7 @@ import javax.imageio.stream.ImageInputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Service;
 
 /**
  * URL version of gov.nist.isg.pyramidio.DeepZoomImageReader by Antoine
@@ -30,6 +31,7 @@ import org.springframework.retry.annotation.Retryable;
  *
  * @author darwinjob
  */
+@Service
 public class DeepZoomImageReaderUrl implements PartialImageReader {
 
 	private final URL dziURL;
