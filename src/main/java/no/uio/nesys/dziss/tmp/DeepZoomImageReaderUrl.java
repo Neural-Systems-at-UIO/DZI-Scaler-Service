@@ -294,7 +294,7 @@ public class DeepZoomImageReaderUrl implements PartialImageReader {
 		URL levelFolder = new URL(filesFolder + Integer.toString(level) + "/");
 		URL tile = new URL(levelFolder.toString() + column + "_" + row + "." + format);
 		logger.info("Tile request: " + tile);
-		try (ImageInputStream iis = ImageIO.createImageInputStream(tile.openStream())) {
+		try (ImageInputStream iis = getRetryableInputStream(tile)) {
 			ImageReader reader = getImageReader(iis);
 			reader.setInput(iis);
 			ImageReadParam param = reader.getDefaultReadParam();
