@@ -11,11 +11,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.annotation.EnableRetry;
 
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
 @SpringBootApplication
+@EnableRetry
 public class Application extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {

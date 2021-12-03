@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.uio.nesys.pyramidio.DeepZoomImageReaderUrl;
+import no.uio.nesys.dziss.tmp.DeepZoomImageReaderUrl;
+
+//import no.uio.nesys.pyramidio.DeepZoomImageReaderUrl;
 
 @RestController
 public class ScalerController {
@@ -28,7 +30,7 @@ public class ScalerController {
 
 	@GetMapping("/")
 	public String index() {
-		return "DZI Scaler Service v.1.1 02.12.2021";
+		return "DZI Scaler Service v.1.2 with Retry 03.12.2021";
 	}
 
 	private ResponseEntity<InputStreamResource> getResponseEntity(BufferedImage bi, HttpHeaders headers, String format)
