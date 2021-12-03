@@ -76,7 +76,7 @@ public class DeepZoomImageReaderUrl implements PartialImageReader {
 		maxLevel = (int) Math.ceil(Math.log(maxDim) / Math.log(2));
 	}
 
-	@Retryable(value = IOException.class)
+	@Retryable(value = IOException.class, maxAttempts = 100)
 	private ImageInputStream getRetryableInputStream(URL tileExample) throws IOException {
 		return ImageIO.createImageInputStream(tileExample.openStream());
 	}
