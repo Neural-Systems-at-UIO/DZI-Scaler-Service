@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
  *
  * @author darwinjob
  */
-@Service
+//@Service
 public class DeepZoomImageReaderUrl implements PartialImageReader {
 
 	private final URL dziURL;
@@ -79,17 +79,15 @@ public class DeepZoomImageReaderUrl implements PartialImageReader {
 		maxLevel = (int) Math.ceil(Math.log(maxDim) / Math.log(2));
 	}
 
-	@Retryable(value = IOException.class)
-	private ImageInputStream getRetryableInputStream(URL tileExample) throws IOException {
-		ImageInputStream iis;
+	//@Retryable(value = IOException.class)
+	private synchronized ImageInputStream getRetryableInputStream(URL tileExample) throws IOException {
 		try {
-			iis = ImageIO.createImageInputStream(tileExample.openStream());
-		} catch (IOException e) {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			logger.info("XXX" + e);
-			throw e;
+			e.printStackTrace();
 		}
-		return iis;
+		return ImageIO.createImageInputStream(tileExample.openStream());
 	}
 	
 //	@Recover
