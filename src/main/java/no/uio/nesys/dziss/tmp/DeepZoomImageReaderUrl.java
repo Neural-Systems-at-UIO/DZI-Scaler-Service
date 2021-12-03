@@ -80,9 +80,9 @@ public class DeepZoomImageReaderUrl implements PartialImageReader {
 	}
 
 	//@Retryable(value = IOException.class)
-	private synchronized ImageInputStream getRetryableInputStream(URL tileExample) throws IOException {
+	private ImageInputStream getRetryableInputStream(URL tileExample) throws IOException {
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
