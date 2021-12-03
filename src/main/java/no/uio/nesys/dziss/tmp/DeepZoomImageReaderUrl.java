@@ -21,6 +21,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.stream.ImageInputStream;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 
 /**
@@ -76,9 +77,14 @@ public class DeepZoomImageReaderUrl implements PartialImageReader {
 		maxLevel = (int) Math.ceil(Math.log(maxDim) / Math.log(2));
 	}
 
-	@Retryable(value = IOException.class, maxAttempts = 100)
+	@Retryable(value = IOException.class)
 	private ImageInputStream getRetryableInputStream(URL tileExample) throws IOException {
 		return ImageIO.createImageInputStream(tileExample.openStream());
+	}
+	
+	@Recover
+    void recover(IOException e, URL url) {
+		logger.info("XXX" + e + " " + url);
 	}
 
 	public URL getDziFile() {
