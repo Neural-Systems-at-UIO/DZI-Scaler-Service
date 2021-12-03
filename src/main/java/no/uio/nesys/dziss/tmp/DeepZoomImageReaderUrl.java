@@ -79,13 +79,21 @@ public class DeepZoomImageReaderUrl implements PartialImageReader {
 
 	@Retryable(value = IOException.class)
 	private ImageInputStream getRetryableInputStream(URL tileExample) throws IOException {
-		return ImageIO.createImageInputStream(tileExample.openStream());
+		ImageInputStream iis;
+		try {
+			iis = ImageIO.createImageInputStream(tileExample.openStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			logger.info("XXX" + e);
+			throw e;
+		}
+		return iis;
 	}
 	
-	@Recover
-    void recover(IOException e, URL url) {
-		logger.info("XXX" + e + " " + url);
-	}
+//	@Recover
+//    void recover(IOException e, URL url) {
+//		logger.info("XXX" + e + " " + url);
+//	}
 
 	public URL getDziFile() {
 		return dziURL;
