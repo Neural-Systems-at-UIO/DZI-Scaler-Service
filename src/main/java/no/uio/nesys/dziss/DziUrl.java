@@ -1,14 +1,13 @@
-package no.uio.nesys.dziss.tmp;
+package no.uio.nesys.dziss;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.springframework.retry.annotation.Retryable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -22,6 +21,11 @@ import org.xml.sax.SAXException;
  * @author darwinjob
  */
 public class DziUrl {
+
+	private RetryableInputStreamService riss = SpringContext.getBean(RetryableInputStreamService.class);
+
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(DziUrl.class.getName());
 
 	private final int tileSize;
 	private final int overlap;
@@ -37,11 +41,11 @@ public class DziUrl {
 		this.height = height;
 	}
 
-	public DziUrl(URL dziURL) throws IOException {
+	public DziUrl(URL dziURL) throws IOException {		
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = factory.newDocumentBuilder();
-			Document doc = db.parse(getRetryableInputStream(dziURL));
+			Document doc = db.parse(riss.getRetryableInputStream(dziURL));
 			Element imageNode = doc.getDocumentElement();
 			if (!"Image".equals(imageNode.getNodeName())) {
 				throw new IOException("Unsupported dzi file.");
@@ -68,11 +72,6 @@ public class DziUrl {
 		} catch (ParserConfigurationException | SAXException ex) {
 			throw new IOException(ex);
 		}
-	}
-	
-	@Retryable(value = IOException.class)
-	private InputStream getRetryableInputStream(URL dziURL) throws IOException {
-		return dziURL.openStream();
 	}
 
 	public int getTileSize() {
@@ -109,4 +108,5 @@ public class DziUrl {
 		sb.append("</Image>\n");
 		return sb.toString();
 	}
+
 }

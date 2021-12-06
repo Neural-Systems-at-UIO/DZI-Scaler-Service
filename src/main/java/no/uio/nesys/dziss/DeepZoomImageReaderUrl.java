@@ -1,13 +1,9 @@
-package no.uio.nesys.dziss.tmp;
+package no.uio.nesys.dziss;
 
-import gov.nist.isg.pyramidio.PartialImageReader;
-import gov.nist.isg.pyramidio.tools.BufferedImageHelper;
-import gov.nist.isg.pyramidio.tools.ImageResizingHelper;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,10 +16,12 @@ import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.stream.ImageInputStream;
+
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
-import org.springframework.stereotype.Service;
+
+import gov.nist.isg.pyramidio.PartialImageReader;
+import gov.nist.isg.pyramidio.tools.BufferedImageHelper;
+import gov.nist.isg.pyramidio.tools.ImageResizingHelper;
 
 /**
  * URL version of gov.nist.isg.pyramidio.DeepZoomImageReader by Antoine
@@ -31,8 +29,9 @@ import org.springframework.stereotype.Service;
  *
  * @author darwinjob
  */
-//@Service
 public class DeepZoomImageReaderUrl implements PartialImageReader {
+
+	private RetryableInputStreamService riss = SpringContext.getBean(RetryableInputStreamService.class);
 
 	private final URL dziURL;
 	private final URL filesFolder;
@@ -69,7 +68,7 @@ public class DeepZoomImageReaderUrl implements PartialImageReader {
 		if (tileExample == null) {
 			tileExample = getFilesOfLevel(0).get(0);
 		}
-		try (ImageInputStream iis = getRetryableInputStream(tileExample)) {
+		try (ImageInputStream iis = riss.getRetryableImageInputStream(tileExample)) {
 			ImageReader reader = getImageReader(iis);
 			reader.setInput(iis);
 			this.rawImageType = reader.getRawImageType(0);
@@ -78,22 +77,6 @@ public class DeepZoomImageReaderUrl implements PartialImageReader {
 		int maxDim = Math.max(width, height);
 		maxLevel = (int) Math.ceil(Math.log(maxDim) / Math.log(2));
 	}
-
-	//@Retryable(value = IOException.class)
-	private ImageInputStream getRetryableInputStream(URL tileExample) throws IOException {
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ImageIO.createImageInputStream(tileExample.openStream());
-	}
-	
-//	@Recover
-//    void recover(IOException e, URL url) {
-//		logger.info("XXX" + e + " " + url);
-//	}
 
 	public URL getDziFile() {
 		return dziURL;
@@ -308,7 +291,7 @@ public class DeepZoomImageReaderUrl implements PartialImageReader {
 		URL levelFolder = new URL(filesFolder + Integer.toString(level) + "/");
 		URL tile = new URL(levelFolder.toString() + column + "_" + row + "." + format);
 		logger.info("Tile request: " + tile);
-		try (ImageInputStream iis = getRetryableInputStream(tile)) {
+		try (ImageInputStream iis = riss.getRetryableImageInputStream(tile)) {
 			ImageReader reader = getImageReader(iis);
 			reader.setInput(iis);
 			ImageReadParam param = reader.getDefaultReadParam();
@@ -358,4 +341,5 @@ public class DeepZoomImageReaderUrl implements PartialImageReader {
 		}
 		return readers.next();
 	}
+
 }
