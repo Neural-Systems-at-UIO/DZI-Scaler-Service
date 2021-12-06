@@ -18,9 +18,15 @@
     fetch(path + "?delimiter=/", {headers})
     .then(response => response.json())
     .then(value => {
-        
-        for(let dir of value) {
-            dir = dir.subdir;
+    	
+    	const CONTAINER = document.getElementById("container");
+    	const HEADER = document.getElementById("header");
+    	var imagesLoaded = 0;
+    	var imagesFailed = 0;
+ 
+        for(let dir of value) {    
+           
+        	dir = dir.subdir;
             if(dir) {
                 let name = dir.substring(0, dir.lastIndexOf("."));
                 let dzi = path + dir + name + ".dzi";
@@ -32,9 +38,19 @@
                 
                 var img = document.createElement('img');
                 img.src = url;
-                var container = document.getElementById("container");
-                container.appendChild(img);
-               
+                img.onload = function () {
+                	console.log ("Loaded: " + dzi);
+                	HEADER.innerHTML =  "Images (check console): " + value.length + ", loaded: " + ++imagesLoaded + ", failed: " + imagesFailed + "... ";
+ 					if ((imagesLoaded + imagesFailed) == value.length)
+ 						HEADER.innerHTML = HEADER.innerHTML + "Done!";	
+                };
+                img.onerror = function () {
+                    console.log ("Failed: " + dzi);
+                    HEADER.innerHTML =  "Images (check console): " + value.length + ", loaded: " + imagesLoaded + ", failed: " + ++imagesFailed  + "... ";
+                    if ((imagesLoaded + imagesFailed) == value.length)
+ 						HEADER.innerHTML = HEADER.innerHTML + "Done!";
+                };
+                CONTAINER.appendChild(img);  
             }
         }
         //
@@ -48,7 +64,7 @@
 </script>
 <body>
 
-	<h2>Images (experimental)</h2>
+	<h4 id="header">Images (check console)</h4>
 
 	<div id="container"></div>
 

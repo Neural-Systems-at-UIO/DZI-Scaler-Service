@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class RetryableInputStreamService {
 
-	@Retryable(value = IOException.class)
+	@Retryable(value = IOException.class, maxAttempts = 10)
 	public InputStream getRetryableInputStream(URL url) throws IOException {
 		return url.openStream();
 	}
 
-	@Retryable(value = IOException.class)
+	@Retryable(value = IOException.class, maxAttempts = 10)
 	public ImageInputStream getRetryableImageInputStream(URL url) throws IOException {
 
 		return ImageIO.createImageInputStream(getRetryableInputStream(url));
