@@ -22,8 +22,6 @@ import org.xml.sax.SAXException;
  */
 public class DziUrl {
 
-	private RetryableInputStreamService riss = SpringContext.getBean(RetryableInputStreamService.class);
-
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DziUrl.class.getName());
 
@@ -41,11 +39,11 @@ public class DziUrl {
 		this.height = height;
 	}
 
-	public DziUrl(URL dziURL) throws IOException {		
+	public DziUrl(URL dziURL) throws IOException {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = factory.newDocumentBuilder();
-			Document doc = db.parse(riss.getRetryableInputStream(dziURL));
+			Document doc = db.parse(RetryableInputStreamService.getRetryableInputStream(dziURL));
 			Element imageNode = doc.getDocumentElement();
 			if (!"Image".equals(imageNode.getNodeName())) {
 				throw new IOException("Unsupported dzi file.");

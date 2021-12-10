@@ -26,6 +26,8 @@ tr:nth-child(even) {
     const SCALE = getUrlParamValue("scale");
     const WIDTH = getUrlParamValue("width");
     const FORMAT = getUrlParamValue("format");
+    
+    var THE_TABLE;// = document.getElementById("theTable");
 
     if (!BUCKET) alert("No bucket provided");
    
@@ -39,14 +41,22 @@ tr:nth-child(even) {
     .then(response => response.json())
     .then(value => {
         
-        const THE_TABLE = document.getElementById("theTable");
+    	THE_TABLE = document.getElementById("theTable");
         
-        for(let dir of value) {
-            dir = dir.subdir;
-            if(dir) {
-                let name = dir.substring(0, dir.lastIndexOf("."));
-                let dzi = path + dir + name + ".dzi";
+        dzis = [];
+        for(let v of value) {
+        	v = v.subdir;
+        	if(v) {
+        		let name = v.substring(0, v.lastIndexOf("."));
+                let dzi = path + v + name + ".dzi";
+                dzis.push(dzi);
+        	}
+        }
         
+        loadImagesInSequence(dzis);
+        
+/*         for(let dzi of dzis) {
+            
                 var row = THE_TABLE.insertRow();
                 var cell1 = row.insertCell(0);
                 var cell2 = row.insertCell(1);
@@ -59,12 +69,52 @@ tr:nth-child(even) {
                 var urlPreview = window.location.origin + "/width/?dzi=" + dzi + "&width=30&format=png";
                 cell1.innerHTML = "<img src=" + urlPreview + " />";
                 cell2.innerHTML = url.link(url);
-            }
-        }
+            
+        } */
         //
         
     });
-       
+           
+    function loadImagesInSequence(dzis) {
+  	  if (!dzis.length) {
+  		  
+  	    return;
+  	  }
+  	        	
+
+
+  	  var img = new Image();
+  	  var dzi = dzis.shift();
+
+  	  img.onload = function() {
+  		  console.log ("Loaded: " + dzi);
+    		
+			
+			loadImagesInSequence(dzis) };
+			
+			img.onerror = function() {
+				console.log ("Failed: " + dzi);
+	        
+	            loadImagesInSequence(dzis);
+			}
+			
+			var row = THE_TABLE.insertRow();
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            
+          	//SCALE rulz
+            var url;
+            if (WIDTH) url = window.location.origin + "/width/?dzi=" + dzi + "&width=" + WIDTH + "&format=" + FORMAT;
+            if (SCALE) url = window.location.origin + "/scale/?dzi=" + dzi + "&scale=" + SCALE + "&format=" + FORMAT;
+            
+            var urlPreview = window.location.origin + "/width/?dzi=" + dzi + "&width=30&format=png";
+            cell1.appendChild(img);//"<img src=" + urlPreview + " />";
+            cell2.innerHTML = url.link(url);
+  	  
+			img.src = urlPreview;
+  	
+  	}
+    
     function getUrlParamValue(paramName) {
         return (new URL(window.location)).searchParams.get(paramName);
     }
@@ -74,7 +124,7 @@ tr:nth-child(even) {
 
 	<h4 id="theHeader">Download images (consider using download manager)</h4>
 
-	<table id="theTable" />
+	<table id="theTable"></table>
 
 </body>
 </html>

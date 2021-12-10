@@ -7,21 +7,51 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 
-import org.springframework.retry.annotation.Retryable;
-import org.springframework.stereotype.Service;
-
-@Service
 public class RetryableInputStreamService {
 
-	@Retryable(value = IOException.class, maxAttempts = 10)
-	public InputStream getRetryableInputStream(URL url) throws IOException {
-		return url.openStream();
+	public static InputStream getRetryableInputStream(URL url) {
+		return getRetryableInputStream(url, 5, 500);
 	}
 
-	@Retryable(value = IOException.class, maxAttempts = 10)
-	public ImageInputStream getRetryableImageInputStream(URL url) throws IOException {
+	public /* synchronized */ static InputStream getRetryableInputStream(URL url, int retry, int wait) {
 
-		return ImageIO.createImageInputStream(getRetryableInputStream(url));
+		int counter = 0;
+		while (counter < retry) {
+			try {
+				return url.openStream();
+			} catch (IOException e) {
+				e.printStackTrace();
+				try {
+					Thread.sleep(wait);
+					++counter;
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		return null;
 	}
 
+	public /* synchronized */ static ImageInputStream getRetryableImageInputStream(URL url) {
+		return getRetryableImageInputStream(url, 5, 500);
+	}
+
+	public /* synchronized */ static ImageInputStream getRetryableImageInputStream(URL url, int retry, int wait) {
+
+		int counter = 0;
+		while (counter < retry) {
+			try {
+				return ImageIO.createImageInputStream(getRetryableInputStream(url));
+			} catch (IOException e) {
+				e.printStackTrace();
+				try {
+					Thread.sleep(wait);
+					++counter;
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
 }

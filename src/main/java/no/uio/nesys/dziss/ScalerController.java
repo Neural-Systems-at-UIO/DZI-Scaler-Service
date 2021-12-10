@@ -27,7 +27,7 @@ public class ScalerController {
 
 	@GetMapping("/")
 	public String index() {
-		return "DZI Scaler Service v.1.3 with Retry 06.12.2021";
+		return "DZI Scaler Service v.1.4 without Retryable 10.12.2021";
 	}
 
 	private ResponseEntity<InputStreamResource> getResponseEntity(BufferedImage bi, HttpHeaders headers, String format)

@@ -31,8 +31,6 @@ import gov.nist.isg.pyramidio.tools.ImageResizingHelper;
  */
 public class DeepZoomImageReaderUrl implements PartialImageReader {
 
-	private RetryableInputStreamService riss = SpringContext.getBean(RetryableInputStreamService.class);
-
 	private final URL dziURL;
 	private final URL filesFolder;
 	private final int tileSize;
@@ -68,7 +66,7 @@ public class DeepZoomImageReaderUrl implements PartialImageReader {
 		if (tileExample == null) {
 			tileExample = getFilesOfLevel(0).get(0);
 		}
-		try (ImageInputStream iis = riss.getRetryableImageInputStream(tileExample)) {
+		try (ImageInputStream iis = RetryableInputStreamService.getRetryableImageInputStream(tileExample)) {
 			ImageReader reader = getImageReader(iis);
 			reader.setInput(iis);
 			this.rawImageType = reader.getRawImageType(0);
@@ -254,6 +252,7 @@ public class DeepZoomImageReaderUrl implements PartialImageReader {
 				int y;
 				int h;
 				if (j == firstTileRow) {
+					
 					y = region.y - firstTileRow * tileSize;
 					if (j == lastTileRow) {
 						h = region.height;
@@ -291,7 +290,7 @@ public class DeepZoomImageReaderUrl implements PartialImageReader {
 		URL levelFolder = new URL(filesFolder + Integer.toString(level) + "/");
 		URL tile = new URL(levelFolder.toString() + column + "_" + row + "." + format);
 		logger.info("Tile request: " + tile);
-		try (ImageInputStream iis = riss.getRetryableImageInputStream(tile)) {
+		try (ImageInputStream iis = RetryableInputStreamService.getRetryableImageInputStream(tile)) {
 			ImageReader reader = getImageReader(iis);
 			reader.setInput(iis);
 			ImageReadParam param = reader.getDefaultReadParam();

@@ -6,6 +6,12 @@
     const SCALE = getUrlParamValue("scale");
     const WIDTH = getUrlParamValue("width");
     const FORMAT = getUrlParamValue("format");
+    
+	  var CONTAINER;
+    	var HEADER;
+    	var NUMBER_OF_IMAGES;
+      	var IMAGES_LOADED = 0;
+      	var IMAGES_FAILED = 0;
 
     if (!BUCKET) alert("No bucket provided");
    
@@ -19,47 +25,58 @@
     .then(response => response.json())
     .then(value => {
     	
-    	const CONTAINER = document.getElementById("container");
-    	const HEADER = document.getElementById("header");
-    	var imagesLoaded = 0;
-    	var imagesFailed = 0;
- 
-        for(let dir of value) {    
-           
-        	dir = dir.subdir;
-            if(dir) {
-                let name = dir.substring(0, dir.lastIndexOf("."));
-                let dzi = path + dir + name + ".dzi";
-        		
-                //SCALE rulz
-                var url;
-                if (WIDTH) url = window.location.origin + "/width/?dzi=" + dzi + "&width=" + WIDTH + "&format=" + FORMAT;
-                if (SCALE) url = window.location.origin + "/scale/?dzi=" + dzi + "&scale=" + SCALE + "&format=" + FORMAT;
-                
-                var img = document.createElement('img');
-                img.src = url;
-                img.onload = function () {
-                	console.log ("Loaded: " + dzi);
-                	HEADER.innerHTML =  "Images (check console): " + value.length + ", loaded: " + ++imagesLoaded + ", failed: " + imagesFailed + "... ";
- 					if ((imagesLoaded + imagesFailed) == value.length)
- 						HEADER.innerHTML = HEADER.innerHTML + "Done!";	
-                };
-                img.onerror = function () {
-                    console.log ("Failed: " + dzi);
-                    HEADER.innerHTML =  "Images (check console): " + value.length + ", loaded: " + imagesLoaded + ", failed: " + ++imagesFailed  + "... ";
-                    if ((imagesLoaded + imagesFailed) == value.length)
- 						HEADER.innerHTML = HEADER.innerHTML + "Done!";
-                };
-                CONTAINER.appendChild(img);  
-            }
+    	dzis = [];
+        for(let v of value) {
+        	v = v.subdir;
+        	if(v) {
+        		let name = v.substring(0, v.lastIndexOf("."));
+                let dzi = path + v + name + ".dzi";
+                dzis.push(dzi);
+        	}
         }
-        //
+        
+  	  CONTAINER = document.getElementById("container");
+    HEADER = document.getElementById("header");
+    NUMBER_OF_IMAGES = dzis.length;
+        
+        loadImagesInSequence(dzis);
         
     });
        
     function getUrlParamValue(paramName) {
         return (new URL(window.location)).searchParams.get(paramName);
     }
+    
+    function loadImagesInSequence(dzis) {
+    	  if (!dzis.length) {
+    		  HEADER.innerHTML = HEADER.innerHTML + "Done!";
+    	    return;
+    	  }
+    	        	
+
+
+    	  var img = new Image();
+    	  var dzi = dzis.shift();
+    	  
+    	  var url;
+          if (WIDTH) url = window.location.origin + "/width/?dzi=" + dzi + "&width=" + WIDTH + "&format=" + FORMAT;
+          if (SCALE) url = window.location.origin + "/scale/?dzi=" + dzi + "&scale=" + SCALE + "&format=" + FORMAT;
+
+    	  img.onload = function() {
+    		  console.log ("Loaded: " + dzi);
+      		HEADER.innerHTML =  "Images (check console): " + NUMBER_OF_IMAGES + ", loaded: " + ++IMAGES_LOADED + ", failed: " + IMAGES_FAILED + ", left: " + dzis.length + "... ";
+			
+			loadImagesInSequence(dzis) };
+			
+			img.onerror = function() {
+				console.log ("Failed: " + dzi);
+	            HEADER.innerHTML =  "Images (check console): " + NUMBER_OF_IMAGES + ", loaded: " + IMAGES_LOADED + ", failed: " + ++IMAGES_FAILED + ", left: " + dzis.length + "... ";
+	            loadImagesInSequence(dzis);
+			}
+    	  
+			img.src = url;
+    	  CONTAINER.appendChild(img);
+    	}
 
 </script>
 <body>
@@ -70,10 +87,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
