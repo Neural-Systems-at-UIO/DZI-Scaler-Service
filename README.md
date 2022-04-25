@@ -1,4 +1,4 @@
-# DZI Scaling Service
+# DZI Scaler Service
 The service will extract PNG or JPEG image with given parameters (x, y, width, height, scale) from a DZI pyramid stored at CSCS.
 
 Usecases:
