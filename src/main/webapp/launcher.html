@@ -1,0 +1,217 @@
+	<!DOCTYPE html>
+	<html>
+	    <head>
+	        <meta name="viewport" content="width=device-width, initial-scale=1" />
+	        <style>
+	            * {
+	                box-sizing: border-box;
+	            }
+	
+	            input[type="text"],
+	            select,
+	            textarea {
+	                width: 100%;
+	                padding: 12px;
+	                border: 1px solid #ccc;
+	                border-radius: 4px;
+	                resize: vertical;
+	            }
+	
+	            label {
+	                padding: 12px 12px 12px 0;
+	                display: inline-block;
+	            }
+	
+	            input[type="submit"] {
+	                background-color: #04aa6d;
+	                color: white;
+	                padding: 12px 20px;
+	                border: none;
+	                border-radius: 4px;
+	                cursor: pointer;
+	                float: right;
+	            }
+	
+	            input[disabled] {
+	                background-color: #dcdad1;
+	                pointer-events: none;
+	            }
+	
+	            input[disabled]:hover {
+	                background-color: #dcdad1;
+	            }
+	
+	            input[type="submit"]:hover {
+	                background-color: #45a049;
+	            }
+	
+	            .container {
+	                border-radius: 5px;
+	                background-color: #f2f2f2;
+	                padding: 20px;
+	            }
+	
+	            .col-25 {
+	                float: left;
+	                width: 25%;
+	                margin-top: 6px;
+	            }
+	
+	            .col-75 {
+	                float: left;
+	                width: 75%;
+	                margin-top: 6px;
+	            }
+	
+	            /* Clear floats after the columns */
+	            .row:after {
+	                content: "";
+	                display: table;
+	                clear: both;
+	            }
+	
+	            /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+	            @media screen and (max-width: 600px) {
+	                .col-25,
+	                .col-75,
+	                input[type="submit"] {
+	                    width: 100%;
+	                    margin-top: 0;
+	                }
+	            }
+	        </style>
+	    </head>
+	    <body>
+	        <h2>Single DZI image</h2>
+	        <div class="container">
+	            <div class="row">
+	                <div class="col-25">
+	                    <label for="fname">Image DZI URL</label>
+	                </div>
+	                <div class="col-75">
+	                    <input type="text" id="dziUrlId" placeholder="Paste URL here..." oninput="somethingTyped()" />
+	                </div>
+	            </div>
+	            
+	                        <div class="row">
+	                <div class="col-25">
+	                    
+	  
+	                </div>
+	                <div class="col-75" style="display: flex; gap: 6px;">
+	                    <label for="region">Width:</label>
+	                    <input type="text" id="dziWidthId" placeholder="..." readonly/>
+	                    
+	                    <label for="region">Height:</label>
+	                    <input type="text" id="dziHeightId" placeholder="..." readonly/>
+	                    
+	                    <label for="region">Format:</label>
+	                    <input type="text" id="dziFormatId" placeholder="..." readonly/>
+	                    
+	                    <label for="region">Tile size:</label>
+	                    <input type="text" id="dziTileSizeId" placeholder="..." readonly/>
+	                    
+	                    <label for="region">Overlap:</label>
+	                    <input type="text" id="dziOverlabId" placeholder="..." readonly/>
+	                    
+	                    
+	                </div>
+	            </div>
+	            <hr>
+	            <div class="row">
+	                <div class="col-25">
+	                    <label for="outputFormatId">Format</label>
+	                </div>
+	                <div class="col-75">
+	                    <select id="outputFormatId">
+	                        <option value="PNG">PNG</option>
+	                        <option value="JPG">JPG</option>
+	                    </select>
+	                </div>
+	            </div>
+	            <div class="row">
+	                <div class="col-25">
+	                    <input type="radio" id="scaleId" name="radio_group" checked />
+	                    <label for="scale">Scale</label>
+	                    <br />
+	                </div>
+	                <div class="col-75">
+	                    <input type="text" id="scaleValueId" placeholder="Scale, 0.10 means 10% of original..." />
+	                </div>
+	            </div>
+	            <div class="row">
+	                <div class="col-25">
+	                    <input type="radio" id="widthId" name="radio_group" />
+	                    <label for="width">Width</label>
+	                    <br />
+	                </div>
+	                <div class="col-75">
+	                    <input type="text" id="widthValueId" placeholder="Width in pixels..." />
+	                </div>
+	            </div>
+	            <div class="row">
+	                <div class="col-25">
+	                    <input type="radio" id="heightId" name="radio_group" />
+	                    <label for="height">Height</label>
+	                    <br />
+	                </div>
+	                <div class="col-75">
+	                    <input type="text" id="heightValueId" placeholder="Height in pixels..." />
+	                </div>
+	            </div>
+	            <div class="row">
+	                <div class="col-25">
+	                    <input type="radio" id="regionId" name="radio_group" />
+	                    <label for="region">Region</label>
+	                    <br />
+	                </div>
+	                <div class="col-75" style="display: flex; gap: 6px;">
+	                    <input type="text" id="xRegionValueId" placeholder="X in pixels..." />
+	                    <input type="text" id="yRegionValueId" placeholder="Y in pixels..." />
+	                    <input type="text" id="widthRegionValueId" placeholder="Width in pixels..." />
+	                    <input type="text" id="heightRegionValueId" placeholder="Height in pixels..." />
+	                </div>
+	            </div>
+	            <div class="row">
+	                <div class="col-25"></div>
+	            </div>
+	            <div class="row">
+	                <div class="col-25"></div>
+	                <div class="col-75">
+	                    <input type="submit" value="Open in New Window" id="openInNewWindowId" onclick="openInNewWindow()" disabled />
+	                    <input type="submit" value="Copy to Clipboard" id="copyToClipboardId" onclick="copyToClipboard()" disabled />
+	                </div>
+	            </div>
+	        </div>
+	        <script type="text/javascript">
+	            function somethingTyped() {
+	                console.log("DDD");
+	                document.getElementById("openInNewWindowId").removeAttribute("disabled");
+	                document.getElementById("copyToClipboardId").removeAttribute("disabled");
+	                fetch("https://object.cscs.ch/v1/AUTH_08c08f9f119744cbbf77e216988da3eb/imgsvc-13da6792-b4a0-4369-8312-107b8ea57986/D1R_P70_F_C60_s001.tif/D1R_P70_F_C60_s001.dzi")
+	                	.then(response => response.text())
+	                		.then(data => {
+	                			const parser = new DOMParser();
+	                			const xml = parser.parseFromString(data, "application/xml");
+	                			console.log(xml.getElementsByTagName('Image')[0].getElementsByTagName('Size')[0].getAttribute('Width'));
+	  						})
+					.catch(error => console.log(error));
+	                //alert("Submit button XXX!" + document.getElementById('outputFormatId').value);
+	                //return true;
+	            }
+	
+	            function openInNewWindow() {
+	                alert("Submit button clicked!" + document.getElementById("outputFormatId").value);
+	                //return true;
+	            }
+	
+	            function copyToClipboard() {
+	                //if
+	                console.log(document.querySelector('input[name="radio_group"]:checked').id);
+	                console.log("XXX" + document.getElementById("width").value + " " + document.getElementById("x").value);
+	                alert("Copied to Clipboard!");
+	                //return true;
+	            }
+	        </script>
+	    </body>
+	</html>
