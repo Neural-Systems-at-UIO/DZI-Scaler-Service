@@ -15,6 +15,7 @@ The example URLs:
  
 Known limitation: the resulting image can’t be larger than 2GB.
 
+The example URLs for image collections:
 * https://dziss.apps-dev.hbp.eu/download.html?bucket=https://object.cscs.ch/v1/AUTH_08c08f9f119744cbbf77e216988da3eb/imgsvc-890b727c-f3b5-624f-028a-4f6d35acce18&width=1000&format=png
 </br>Webpage with links to downscaled (1000 pixels width) images, PNG format.
 * https://dziss.apps-dev.hbp.eu/images.html?bucket=https://object.cscs.ch/v1/AUTH_08c08f9f119744cbbf77e216988da3eb/imgsvc-890b727c-f3b5-624f-028a-4f6d35acce18&width=300&format=png
